@@ -1,6 +1,7 @@
 package com.study.vhra.rtimes.injection
 
 import com.study.vhra.rtimes.AndroidLog
+import com.study.vhra.rtimes.UseCaseRunner
 import com.study.vhra.rtimes.data.TimeStorageLocal
 import com.study.vhra.rtimes.domain.CalendarManager
 import com.study.vhra.rtimes.domain.ILog
@@ -13,10 +14,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 @Module
 @InstallIn(ApplicationComponent::class)
 object AppModule {
+    private val userCaseExecutors: ExecutorService by lazy { Executors.newSingleThreadExecutor() }
+
     @Provides
     fun provideLog(): ILog = AndroidLog()
 
@@ -36,5 +41,8 @@ object AppModule {
         timeStorage: TimeStorage,
         log: ILog
     ): UseCase<RegisterTimeForCurrentDate.Input, RegisterTimeForCurrentDate.Output> =
-        RegisterTimeForCurrentDate(calendarManager, validator, timeStorage, log)
+        UseCaseRunner(
+            RegisterTimeForCurrentDate(calendarManager, validator, timeStorage, log),
+            userCaseExecutors
+        )
 }

@@ -1,6 +1,7 @@
 package com.study.vhra.rtimes.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.study.vhra.rtimes.R
@@ -37,6 +38,7 @@ class HomeActivity : AppCompatActivity(), HomeContractor.View, TimePickerView.On
     }
 
     override fun showTimeRegisteredSuccessfully() {
+        Log.d("devlog", "showTimeRegisteredSuccessfully")
         Toast.makeText(
             this,
             getString(R.string.text_time_resgistered_successfully),
@@ -45,6 +47,7 @@ class HomeActivity : AppCompatActivity(), HomeContractor.View, TimePickerView.On
     }
 
     override fun showErrorForRegisteringTime() {
+        Log.d("devlog", "showErrorForRegisteringTime")
         Toast.makeText(
             this,
             getString(R.string.text_time_unregistered_error),
