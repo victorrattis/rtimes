@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">rTimes</string>
+    <string name="content_register_time_button_description">TODO</string>
+    <string name="text_time_resgistered_successfully">Foi Registrado com sucesso!</string>
+    <string name="text_time_unregistered_error">Ocorrou um error ao registrar!</string>
+</resources>
