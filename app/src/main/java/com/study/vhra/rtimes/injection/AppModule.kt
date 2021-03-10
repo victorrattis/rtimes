@@ -1,13 +1,16 @@
 package com.study.vhra.rtimes.injection
 
 import com.study.vhra.rtimes.AndroidLog
+import com.study.vhra.rtimes.IListTimRegisterUseCase
+import com.study.vhra.rtimes.IRegisterTimeForCurrentDateUseCase
 import com.study.vhra.rtimes.UseCaseRunner
 import com.study.vhra.rtimes.data.TimeStorageLocal
 import com.study.vhra.rtimes.domain.CalendarManager
 import com.study.vhra.rtimes.domain.ILog
+import com.study.vhra.rtimes.domain.storage.TimeRegisterStorage
 import com.study.vhra.rtimes.domain.storage.TimeStorage
-import com.study.vhra.rtimes.domain.usecase.RegisterTimeForCurrentDate
-import com.study.vhra.rtimes.domain.usecase.UseCase
+import com.study.vhra.rtimes.domain.usecase.ListTimRegisterUseCase
+import com.study.vhra.rtimes.domain.usecase.RegisterTimeForCurrentDateUseCase
 import com.study.vhra.rtimes.domain.validate.TimeValidator
 import com.study.vhra.rtimes.manager.CalendarManagerImpl
 import dagger.Module
@@ -35,14 +38,25 @@ object AppModule {
     fun provideTimeStorageLocal(): TimeStorage = TimeStorageLocal()
 
     @Provides
+    fun provideTimeRegisterStorage(): TimeRegisterStorage = TimeStorageLocal()
+
+    @Provides
     fun provideRegisterTimeForCurrentDate(
         calendarManager: CalendarManager,
         validator: TimeValidator,
         timeStorage: TimeStorage,
         log: ILog
-    ): UseCase<RegisterTimeForCurrentDate.Input, RegisterTimeForCurrentDate.Output> =
-        UseCaseRunner(
-            RegisterTimeForCurrentDate(calendarManager, validator, timeStorage, log),
-            userCaseExecutors
-        )
+    ): IRegisterTimeForCurrentDateUseCase = UseCaseRunner(
+        RegisterTimeForCurrentDateUseCase(calendarManager, validator, timeStorage, log),
+        userCaseExecutors
+    )
+
+    @Provides
+    fun providerListTimRegisterUseCase(
+        timeRegisterStorage: TimeRegisterStorage,
+        log: ILog
+    ): IListTimRegisterUseCase = UseCaseRunner(
+        ListTimRegisterUseCase(timeRegisterStorage, log),
+        userCaseExecutors
+    )
 }

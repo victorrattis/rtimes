@@ -1,10 +1,11 @@
 package com.study.vhra.rtimes.injection
 
 import android.app.Activity
-import com.study.vhra.rtimes.RegisterTimeForCurrentDateUseCase
-import com.study.vhra.rtimes.ui.home.HomeActivity
-import com.study.vhra.rtimes.ui.home.HomeContractor
-import com.study.vhra.rtimes.ui.home.HomePresenter
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
+import com.study.vhra.rtimes.IListTimRegisterUseCase
+import com.study.vhra.rtimes.IRegisterTimeForCurrentDateUseCase
+import com.study.vhra.rtimes.ui.home.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,8 +18,29 @@ object HomeModule {
     fun provideView(activity: Activity): HomeContractor.View = activity as HomeActivity
 
     @Provides
+    fun providerViewModelStoreOwner(
+        activity: Activity
+    ): ViewModelStoreOwner = activity as ViewModelStoreOwner
+
+    @Provides
     fun provideHomePresenter(
         view: HomeContractor.View,
-        registerTimeForCurrentDate: RegisterTimeForCurrentDateUseCase
-    ): HomeContractor.Presenter = HomePresenter(view, registerTimeForCurrentDate)
+        registerTimeForCurrentDate: IRegisterTimeForCurrentDateUseCase,
+        listTimRegisterUseCase: IListTimRegisterUseCase
+    ): HomeContractor.Presenter = HomePresenter(
+        view, registerTimeForCurrentDate, listTimRegisterUseCase)
+
+    @Provides
+    fun provideMyFactory(
+        registerTimeForCurrentDate: IRegisterTimeForCurrentDateUseCase,
+        listTimRegisterUseCase: IListTimRegisterUseCase
+    ): HomeViewModelFactory = HomeViewModelFactory(
+        registerTimeForCurrentDate,
+        listTimRegisterUseCase
+    )
+
+    @Provides
+    fun providerMyViewModel(owner: ViewModelStoreOwner, factory: HomeViewModelFactory): HomeViewModel =
+        ViewModelProvider(owner, factory).get(HomeViewModel::class.java)
+
 }
